@@ -113,7 +113,7 @@
   chat.style.display = "none";
 
   const iframe = document.createElement("iframe");
-  iframe.src = `http://localhost:3000/chat/${botID}`;
+  iframe.src = `https://www.docsify.tech/chat/${botID}`;
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
