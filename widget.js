@@ -112,7 +112,6 @@
   chat.style.visibility = "hidden";
   chat.style.display = "none";
 
-  console.log(botID);
   const iframe = document.createElement("iframe");
   iframe.src = `http://localhost:3000/chat/${botID}`;
   iframe.style.width = "100%";
