@@ -2,6 +2,8 @@
   const scriptTag = document.currentScript;
   const botID = scriptTag.id.replace(/\s/g, "");
   const SCOPE_PREFIX = "chat-widget-";
+  const buttonColor = scriptTag.getAttribute('data-color') || 'rgb(91, 76, 254)'; // Default color if not specified
+  
   const style = document.createElement("style");
   style.innerHTML = `
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
@@ -12,7 +14,7 @@
         height: 5rem;
         width: 5.1rem;
         padding: 0px;
-        background-color: rgb(91, 76, 254);
+        background-color: ${buttonColor};
         box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 10px;
         z-index: 199;
         border: none;
@@ -49,12 +51,12 @@
       }
       .${SCOPE_PREFIX}chat-window {
         position: fixed;
-        bottom: 110px; /* Positioned above the button */
+        bottom: 110px;
         right: 20px;
         width: 85vw;
         max-width: 400px;
         height: 70vh;
-        max-height: calc(100vh - 120px); /* Ensure it doesn't overflow the viewport */
+        max-height: calc(100vh - 120px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         border-radius: 10px;
         z-index: 999999998;
