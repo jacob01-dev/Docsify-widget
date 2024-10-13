@@ -1,117 +1,92 @@
 (function () {
   const scriptTag = document.currentScript;
   const botID = scriptTag.id.replace(/\s/g, "");
-  const bubbleColor = scriptTag.getAttribute('data-color') || "royalblue";
   const SCOPE_PREFIX = "chat-widget-";
-
-  const SIZE = 60;
-  const BTN_RAD = SIZE / 2;
-
-  const chatButtonLogo = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" stroke-width="1" stroke="white">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-  </svg>
-  `;
-
-  const chevronDownLogo = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up">
-    <path d="m18 15-6-6-6 6"/>
-  </svg>
-  `;
-
   const style = document.createElement("style");
   style.innerHTML = `
-  @keyframes ${SCOPE_PREFIX}pulse {
-    0% { box-shadow: 0 0 0 0 ${bubbleColor}B3; }
-    70% { box-shadow: 0 0 0 10px ${bubbleColor}00; }
-    100% { box-shadow: 0 0 0 0 ${bubbleColor}00; }
-  }
-
-  @keyframes ${SCOPE_PREFIX}pullUp {
-    from { transform: translate(20%, 20%) scale(0.8); opacity: 0; }
-    to { transform: translate(0, 0) scale(1); opacity: 1; }
-  }
-
-  @keyframes ${SCOPE_PREFIX}pushDown {
-    from { transform: translate(0, 0) scale(1); opacity: 1; }
-    to { transform: translate(20%, 20%) scale(0.8); opacity: 0; }
-  }
-
-  @keyframes ${SCOPE_PREFIX}rotateIcon {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(180deg); }
-  }
-
-  @keyframes ${SCOPE_PREFIX}rotateIconReverse {
-    0% { transform: rotate(180deg); }
-    100% { transform: rotate(0deg); }
-  }
-
-  .${SCOPE_PREFIX}chat-button-animate {
-    animation: ${SCOPE_PREFIX}pulse 2s infinite;
-  }
-
-  .${SCOPE_PREFIX}chat-window-open {
-    animation: ${SCOPE_PREFIX}pullUp 0.25s ease-out forwards;
-  }
-
-  .${SCOPE_PREFIX}chat-window-close {
-    animation: ${SCOPE_PREFIX}pushDown 0.25s ease-in forwards;
-  }
-
-  .${SCOPE_PREFIX}icon-rotate {
-    animation: ${SCOPE_PREFIX}rotateIcon 0.3s ease-in-out forwards;
-  }
-
-  .${SCOPE_PREFIX}icon-rotate-reverse {
-    animation: ${SCOPE_PREFIX}rotateIconReverse 0.3s ease-in-out forwards;
-  }
-  `;
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+      .${SCOPE_PREFIX}chat-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        height: 5rem;
+        width: 5.1rem;
+        padding: 0px;
+        background-color: rgb(91, 76, 254);
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 10px;
+        z-index: 199;
+        border: none;
+        cursor: pointer;
+        border-radius: 10px;
+        font-family: 'Inter', sans-serif;
+        transition: transform 0.2s ease-in-out;
+      }
+      .${SCOPE_PREFIX}chat-button:active {
+        transform: scale(0.95);
+      }
+      .${SCOPE_PREFIX}button-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      .${SCOPE_PREFIX}logo-wrapper {
+        width: 2rem;
+        height: 2rem;
+        margin-bottom: 4px;
+      }
+      .${SCOPE_PREFIX}logo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .${SCOPE_PREFIX}button-text {
+        color: white;
+        font-size: 13.5px;
+        font-weight: 500;
+        text-shadow: rgba(0, 0, 0, 0.2) 1px 1px 2px;
+      }
+      .${SCOPE_PREFIX}chat-window {
+        position: fixed;
+        bottom: 110px; /* Positioned above the button */
+        right: 20px;
+        width: 85vw;
+        max-width: 400px;
+        height: 70vh;
+        max-height: calc(100vh - 120px); /* Ensure it doesn't overflow the viewport */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        z-index: 999999998;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px) scale(0.95);
+      }
+      .${SCOPE_PREFIX}chat-window.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
+    `;
   document.head.appendChild(style);
-
-  const chatButton = document.createElement("div");
+  const chatButton = document.createElement("button");
   chatButton.setAttribute("id", `${SCOPE_PREFIX}chat-bubble-button`);
-  chatButton.style.position = "fixed";
-  chatButton.style.bottom = "20px";
-  chatButton.style.right = "20px";
-  chatButton.style.width = SIZE + "px";
-  chatButton.style.height = SIZE + "px";
-  chatButton.style.borderRadius = BTN_RAD + "px";
-  chatButton.style.backgroundColor = bubbleColor;
-  chatButton.style.boxShadow = "0 4px 8px 0 rgba(0, 0, 0, 0.2)";
-  chatButton.style.cursor = "pointer";
-  chatButton.style.zIndex = 999999999;
-  chatButton.style.transition = "all 0.3s ease-in-out";
-  chatButton.classList.add(`${SCOPE_PREFIX}chat-button-animate`);
-
-  const chatButtonIcon = document.createElement("div");
-  chatButtonIcon.style.display = "flex";
-  chatButtonIcon.style.alignItems = "center";
-  chatButtonIcon.style.justifyContent = "center";
-  chatButtonIcon.style.width = "100%";
-  chatButtonIcon.style.height = "100%";
-  chatButtonIcon.style.zIndex = 999999999;
-  chatButtonIcon.innerHTML = chatButtonLogo;
-  chatButton.appendChild(chatButtonIcon);
-
+  chatButton.className = `${SCOPE_PREFIX}chat-button`;
+  chatButton.innerHTML = `
+      <div class="${SCOPE_PREFIX}button-inner">
+        <div class="${SCOPE_PREFIX}logo-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="color: white;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+          </svg>
+        </div>
+        <div class="${SCOPE_PREFIX}button-text">Need Help</div>
+      </div>
+    `;
   const chat = document.createElement("div");
   chat.setAttribute("id", `${SCOPE_PREFIX}chat-bubble-window`);
-  chat.style.position = "fixed";
-  chat.style.bottom = "100px";
-  chat.style.right = "20px";
-  chat.style.width = "85vw";
-  chat.style.maxWidth = "400px";
-  chat.style.height = "70vh";
-  chat.style.maxHeight = "600px";
-  chat.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.2)";
-  chat.style.borderRadius = "10px";
-  chat.style.zIndex = 999999998;
-  chat.style.overflow = "hidden";
-  chat.style.transition = "all 0.3s ease-in-out";
-  chat.style.opacity = "0";
-  chat.style.visibility = "hidden";
-  chat.style.display = "none";
-
+  chat.className = `${SCOPE_PREFIX}chat-window`;
   const iframe = document.createElement("iframe");
   iframe.src = `https://www.docsify.tech/chat/${botID}`;
   iframe.style.width = "100%";
@@ -120,52 +95,37 @@
   iframe.style.overflow = "hidden";
   iframe.sandbox = "allow-same-origin allow-scripts allow-popups allow-forms";
   chat.appendChild(iframe);
-
   document.body.appendChild(chatButton);
   document.body.appendChild(chat);
-
   let isOpen = false;
-  let isAnimating = false;
 
-  chatButton.addEventListener("click", () => {
-    if (isAnimating) return;
-    isAnimating = true;
+  function openChat() {
+    isOpen = true;
+    chat.classList.add('open');
+  }
 
-    isOpen = !isOpen;
+  function closeChat() {
+    isOpen = false;
+    chat.classList.remove('open');
+  }
 
+  chatButton.addEventListener("click", (e) => {
+    e.stopPropagation();
     if (isOpen) {
-      chatButtonIcon.classList.remove(`${SCOPE_PREFIX}icon-rotate-reverse`);
-      chatButtonIcon.classList.add(`${SCOPE_PREFIX}icon-rotate`);
-      chat.style.display = "block";
-      chat.style.opacity = "1";
-      chat.style.visibility = "visible";
-      chat.classList.remove(`${SCOPE_PREFIX}chat-window-close`);
-      chat.classList.add(`${SCOPE_PREFIX}chat-window-open`);
-      chatButton.style.bottom = "30px";
-
-      setTimeout(() => {
-        chatButtonIcon.innerHTML = chevronDownLogo;
-      }, 150);
+      closeChat();
     } else {
-      chatButtonIcon.classList.remove(`${SCOPE_PREFIX}icon-rotate`);
-      chatButtonIcon.classList.add(`${SCOPE_PREFIX}icon-rotate-reverse`);
-      chat.classList.remove(`${SCOPE_PREFIX}chat-window-open`);
-      chat.classList.add(`${SCOPE_PREFIX}chat-window-close`);
-      chatButton.style.bottom = "20px";
-
-      setTimeout(() => {
-        chatButtonIcon.innerHTML = chatButtonLogo;
-      }, 150);
-
-      setTimeout(() => {
-        chat.style.display = "none";
-        chat.style.opacity = "0";
-        chat.style.visibility = "hidden";
-      }, 250);
+      openChat();
     }
+  });
 
-    setTimeout(() => {
-      isAnimating = false;
-    }, 300);
+  document.addEventListener("click", (e) => {
+    if (isOpen && !chat.contains(e.target) && e.target !== chatButton) {
+      closeChat();
+    }
+  });
+
+  // Prevent clicks inside the iframe from closing the chat
+  chat.addEventListener("click", (e) => {
+    e.stopPropagation();
   });
 })();
